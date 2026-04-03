@@ -38,12 +38,12 @@ export default function App() {
 function Navbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-gaming-900/60 backdrop-blur-xl border-b border-white/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-neon-blue to-neon-purple flex items-center justify-center shadow-[0_0_15px_rgba(0,240,255,0.5)]">
             <Gamepad2 className="text-white w-6 h-6" />
           </div>
-          <span className="font-display font-bold text-2xl tracking-tight text-white">
+          <span className="font-display font-bold text-xl sm:text-2xl tracking-tight text-white">
             Gamer<span className="text-neon-blue">Buddy</span>
           </span>
         </div>
@@ -52,11 +52,11 @@ function Navbar() {
           <a href="#tournaments" className="text-slate-300 hover:text-white hover:text-shadow-glow transition-all">Tournaments</a>
           <a href="#faq" className="text-slate-300 hover:text-white hover:text-shadow-glow transition-all">FAQ</a>
         </div>
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-2 sm:gap-6">
           <button className="hidden sm:block text-sm font-medium text-slate-300 hover:text-white transition-colors">
             Log In
           </button>
-          <button className="relative group px-6 py-2.5 rounded-lg font-bold text-sm text-white overflow-hidden">
+          <button className="relative group px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg font-bold text-xs sm:text-sm text-white overflow-hidden whitespace-nowrap">
             <div className="absolute inset-0 bg-gradient-to-r from-neon-blue to-neon-purple opacity-80 group-hover:opacity-100 transition-opacity" />
             <div className="absolute inset-[1px] bg-gaming-900 rounded-[7px] group-hover:bg-gaming-800 transition-colors" />
             <span className="relative z-10 group-hover:text-shadow-glow transition-all">Get Early Access</span>
@@ -69,7 +69,7 @@ function Navbar() {
 
 function HeroSection() {
   return (
-    <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-24 overflow-hidden">
+    <section className="relative pt-24 pb-14 sm:pt-28 sm:pb-16 lg:pt-40 lg:pb-24 overflow-hidden">
       {/* Background Effects */}
       <div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-neon-blue/20 rounded-full blur-[120px] opacity-50 pointer-events-none" />
       <div className="absolute top-1/3 right-1/4 w-[500px] h-[500px] bg-neon-purple/20 rounded-full blur-[100px] opacity-40 pointer-events-none" />
@@ -99,7 +99,7 @@ function HeroSection() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-8">
+        <div className="flex flex-col lg:flex-row items-center gap-10 sm:gap-12 lg:gap-8">
           
           {/* Left: Text Content */}
           <motion.div
@@ -113,34 +113,34 @@ function HeroSection() {
               Built for Uzbekistan & Central Asia
             </div>
             
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-extrabold text-white tracking-tight mb-6 leading-[1.1]">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-extrabold text-white tracking-tight mb-6 leading-[1.1]">
               Stop solo queue. <br />
               <span className="text-gradient">Find your squad.</span>
             </h1>
             
-            <p className="text-lg md:text-xl text-slate-400 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl text-slate-400 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed">
               Find teammates by rank, role, language, and game. Build squads and join tournaments across Central Asia.
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-12">
-              <button className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-neon-blue to-neon-purple rounded-xl text-white font-bold text-lg hover:shadow-[0_0_30px_rgba(0,240,255,0.4)] transition-all flex items-center justify-center gap-2 group">
+              <button className="w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 bg-gradient-to-r from-neon-blue to-neon-purple rounded-xl text-white font-bold text-base sm:text-lg hover:shadow-[0_0_30px_rgba(0,240,255,0.4)] transition-all flex items-center justify-center gap-2 group">
                 Find Teammates
                 <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
-              <button className="w-full sm:w-auto px-8 py-4 rounded-xl text-white font-bold text-lg border border-white/20 hover:border-neon-purple hover:bg-neon-purple/10 hover:shadow-[0_0_20px_rgba(138,43,226,0.2)] transition-all flex items-center justify-center gap-2">
+              <button className="w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl text-white font-bold text-base sm:text-lg border border-white/20 hover:border-neon-purple hover:bg-neon-purple/10 hover:shadow-[0_0_20px_rgba(138,43,226,0.2)] transition-all flex items-center justify-center gap-2">
                 <Trophy className="w-5 h-5 text-neon-purple" />
                 Explore Tournaments
               </button>
             </div>
             
             {/* Social Proof / Stats */}
-            <div className="flex items-center justify-center lg:justify-start gap-6 text-sm text-slate-400">
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 sm:gap-6 text-sm text-slate-400">
               <div className="flex -space-x-3">
                 {[1, 2, 3, 4].map((i) => (
                   <div key={i} className="w-10 h-10 rounded-full border-2 border-gaming-900 bg-gradient-to-br from-slate-700 to-slate-800" />
                 ))}
               </div>
-              <div className="text-left">
+              <div className="text-center sm:text-left">
                 <div className="text-white font-bold text-base">10,000+ Players</div>
                 <div>Waiting in lobby</div>
               </div>
@@ -166,11 +166,11 @@ function HeroSection() {
               
               {/* Card 3 (Front - Main Player Card) */}
               <div className="absolute inset-0 glass-card rounded-2xl border border-neon-blue/30 bg-gaming-800 p-1 flex flex-col shadow-[0_0_40px_rgba(0,240,255,0.15)]">
-                <div className="relative h-48 rounded-t-xl overflow-hidden bg-gradient-to-br from-slate-800 to-gaming-900 border-b border-white/10">
+                <div className="relative h-40 sm:h-48 rounded-t-xl overflow-hidden bg-gradient-to-br from-slate-800 to-gaming-900 border-b border-white/10">
                   <div className="absolute bottom-4 left-4 flex items-end gap-4">
-                    <div className="w-20 h-20 rounded-xl border-2 border-neon-blue bg-gaming-700 shadow-[0_0_15px_rgba(0,240,255,0.5)]" />
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl border-2 border-neon-blue bg-gaming-700 shadow-[0_0_15px_rgba(0,240,255,0.5)]" />
                     <div className="mb-1">
-                      <h3 className="text-2xl font-display font-bold text-white flex items-center gap-2">
+                      <h3 className="text-xl sm:text-2xl font-display font-bold text-white flex items-center gap-2">
                         ShadowStrike
                         <ShieldCheck className="w-5 h-5 text-neon-blue" />
                       </h3>
@@ -184,8 +184,8 @@ function HeroSection() {
                   </div>
                 </div>
                 
-                <div className="p-6 flex-1 flex flex-col">
-                  <div className="grid grid-cols-3 gap-4 mb-6">
+                <div className="p-4 sm:p-6 flex-1 flex flex-col">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 mb-6">
                     <div className="bg-white/5 rounded-lg p-3 text-center border border-white/5">
                       <div className="text-xs text-slate-400 mb-1">Rank</div>
                       <div className="font-bold text-neon-purple">Global Elite</div>
@@ -202,14 +202,14 @@ function HeroSection() {
                   
                   <div className="mb-6">
                     <div className="text-xs text-slate-400 mb-2 uppercase tracking-wider font-bold">Languages</div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       <span className="px-3 py-1 rounded-md bg-white/5 border border-white/10 text-sm text-white">UZ</span>
                       <span className="px-3 py-1 rounded-md bg-white/5 border border-white/10 text-sm text-white">RU</span>
                       <span className="px-3 py-1 rounded-md bg-white/5 border border-white/10 text-sm text-white">EN</span>
                     </div>
                   </div>
                   
-                  <div className="mt-auto flex gap-3">
+                  <div className="mt-auto flex flex-col sm:flex-row gap-3">
                     <button className="flex-1 py-3 bg-white/10 hover:bg-white/20 rounded-xl text-white font-bold transition-colors border border-white/10">
                       Skip
                     </button>
@@ -237,9 +237,9 @@ function GamesStrip() {
     <div className="border-y border-white/5 bg-white/[0.02] py-8 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <p className="text-center text-sm font-medium text-slate-500 mb-6 uppercase tracking-wider">Supported Games</p>
-        <div className="flex flex-wrap justify-center gap-8 md:gap-16 opacity-60">
+        <div className="flex flex-wrap justify-center gap-4 sm:gap-8 md:gap-16 opacity-60">
           {games.map((game, i) => (
-            <div key={i} className="font-display font-bold text-xl md:text-2xl text-white tracking-widest">
+            <div key={i} className="font-display font-bold text-base sm:text-xl md:text-2xl text-white tracking-widest">
               {game}
             </div>
           ))}
@@ -284,7 +284,7 @@ function FeaturesSection() {
   ];
 
   return (
-    <section id="features" className="py-24 relative">
+    <section id="features" className="py-16 sm:py-20 lg:py-24 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-6">
@@ -303,7 +303,7 @@ function FeaturesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="glass-card p-8 rounded-2xl hover:bg-white/10 transition-colors group"
+              className="glass-card p-6 sm:p-8 rounded-2xl hover:bg-white/10 transition-colors group"
             >
               <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 {feature.icon}
@@ -340,17 +340,17 @@ function HowItWorksSection() {
   ];
 
   return (
-    <section className="py-24 bg-gaming-800 relative border-y border-white/5">
+    <section className="py-16 sm:py-20 lg:py-24 bg-gaming-800 relative border-y border-white/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col lg:flex-row gap-16 items-center">
+        <div className="flex flex-col lg:flex-row gap-10 sm:gap-16 items-center">
           <div className="lg:w-1/2">
             <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-6">
               From solo to squad in <span className="text-gradient">minutes</span>
             </h2>
-            <div className="space-y-8 mt-12">
+            <div className="space-y-6 sm:space-y-8 mt-10 sm:mt-12">
               {steps.map((step, i) => (
-                <div key={i} className="flex gap-6">
-                  <div className="flex-shrink-0 w-14 h-14 rounded-full border border-neon-blue/30 flex items-center justify-center text-neon-blue font-display font-bold text-xl bg-neon-blue/5">
+                <div key={i} className="flex gap-4 sm:gap-6">
+                  <div className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-full border border-neon-blue/30 flex items-center justify-center text-neon-blue font-display font-bold text-lg sm:text-xl bg-neon-blue/5">
                     {step.num}
                   </div>
                   <div>
@@ -364,7 +364,7 @@ function HowItWorksSection() {
           <div className="lg:w-1/2 w-full">
             <div className="relative aspect-square max-w-md mx-auto">
               <div className="absolute inset-0 bg-gradient-to-tr from-neon-blue/20 to-neon-purple/20 rounded-full blur-3xl" />
-              <div className="relative h-full w-full glass-card rounded-3xl border border-white/10 overflow-hidden p-6 flex flex-col">
+              <div className="relative h-full w-full glass-card rounded-3xl border border-white/10 overflow-hidden p-4 sm:p-6 flex flex-col">
                 {/* Mock UI */}
                 <div className="flex items-center justify-between mb-6">
                   <div className="font-display font-bold text-white">Suggested Players</div>
@@ -373,7 +373,7 @@ function HowItWorksSection() {
                 
                 <div className="flex-1 space-y-4">
                   {[1, 2, 3].map((i) => (
-                    <div key={i} className="bg-white/5 rounded-xl p-4 flex items-center gap-4 border border-white/5 hover:border-white/20 transition-colors cursor-pointer">
+                    <div key={i} className="bg-white/5 rounded-xl p-3 sm:p-4 flex items-center gap-3 sm:gap-4 border border-white/5 hover:border-white/20 transition-colors cursor-pointer">
                       <div className="w-12 h-12 rounded-full bg-gradient-to-br from-slate-700 to-slate-800 border border-white/10" />
                       <div className="flex-1">
                         <div className="flex items-center justify-between">
@@ -399,15 +399,15 @@ function HowItWorksSection() {
 
 function AppMockupSection() {
   return (
-    <section className="py-24 relative overflow-hidden">
+    <section className="py-16 sm:py-20 lg:py-24 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-16">
+        <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-10 sm:mb-16">
           Designed for <span className="text-gradient">Gamers</span>
         </h2>
         
         <div className="relative mx-auto max-w-5xl">
           <div className="absolute -inset-1 bg-gradient-to-r from-neon-blue to-neon-purple rounded-2xl blur opacity-20" />
-          <div className="relative glass-card rounded-2xl border border-white/10 aspect-[16/9] overflow-hidden bg-[#0d0d12] flex items-center justify-center">
+          <div className="relative glass-card rounded-2xl border border-white/10 aspect-[4/3] sm:aspect-[16/9] overflow-hidden bg-[#0d0d12] flex items-center justify-center">
             {/* Abstract representation of the app dashboard */}
             <div className="absolute inset-0 flex">
               {/* Sidebar */}
@@ -418,19 +418,19 @@ function AppMockupSection() {
                 </div>
               </div>
               {/* Main Content */}
-              <div className="flex-1 p-8">
+              <div className="flex-1 p-4 sm:p-6 md:p-8">
                 <div className="flex justify-between items-center mb-8">
                   <div className="w-48 h-8 bg-white/10 rounded" />
                   <div className="w-10 h-10 bg-white/10 rounded-full" />
                 </div>
-                <div className="grid grid-cols-3 gap-6 mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
                   {[1,2,3].map(i => <div key={i} className="h-32 bg-white/5 rounded-xl border border-white/5" />)}
                 </div>
-                <div className="h-64 bg-white/5 rounded-xl border border-white/5" />
+                <div className="h-40 sm:h-64 bg-white/5 rounded-xl border border-white/5" />
               </div>
             </div>
             
-            <div className="z-10 bg-gaming-900/80 backdrop-blur-sm px-6 py-3 rounded-full border border-white/10 text-sm font-medium text-white flex items-center gap-2">
+            <div className="z-10 bg-gaming-900/80 backdrop-blur-sm px-4 sm:px-6 py-2.5 sm:py-3 rounded-full border border-white/10 text-xs sm:text-sm font-medium text-white flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-neon-purple animate-pulse" />
               Dashboard Preview
             </div>
@@ -464,7 +464,7 @@ function TestimonialsSection() {
   ];
 
   return (
-    <section className="py-24 bg-gaming-800 relative border-y border-white/5">
+    <section className="py-16 sm:py-20 lg:py-24 bg-gaming-800 relative border-y border-white/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-6">
@@ -474,13 +474,13 @@ function TestimonialsSection() {
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {testimonials.map((t, i) => (
-            <div key={i} className="glass-card p-8 rounded-2xl relative">
+            <div key={i} className="glass-card p-6 sm:p-8 rounded-2xl relative">
               <div className="flex gap-1 mb-6">
                 {[...Array(t.rating)].map((_, j) => (
                   <Star key={j} className="w-5 h-5 fill-neon-blue text-neon-blue" />
                 ))}
               </div>
-              <p className="text-slate-300 mb-8 italic">"{t.quote}"</p>
+              <p className="text-slate-300 text-sm sm:text-base mb-8 italic">"{t.quote}"</p>
               <div className="flex items-center gap-4 mt-auto">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-700 to-slate-800" />
                 <div>
@@ -498,11 +498,11 @@ function TestimonialsSection() {
 
 function TournamentsSection() {
   return (
-    <section id="tournaments" className="py-24 relative overflow-hidden">
+    <section id="tournaments" className="py-16 sm:py-20 lg:py-24 relative overflow-hidden">
       <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-neon-pink/10 rounded-full blur-[100px] pointer-events-none" />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col lg:flex-row gap-16 items-center">
+        <div className="flex flex-col lg:flex-row gap-10 sm:gap-16 items-center">
           <div className="lg:w-1/2 order-2 lg:order-1">
             <div className="space-y-6">
               {[
@@ -510,7 +510,7 @@ function TournamentsSection() {
                 { name: "Central Asia Dota Cup", prize: "$5,000", date: "Starts in 2 weeks", status: "Upcoming" },
                 { name: "PUBG Mobile Campus", prize: "Gaming Gear", date: "Ongoing", status: "Live" }
               ].map((t, i) => (
-                <div key={i} className="glass-card p-6 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-white/5 hover:border-neon-purple/30 transition-colors">
+                <div key={i} className="glass-card p-5 sm:p-6 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-white/5 hover:border-neon-purple/30 transition-colors">
                   <div>
                     <div className="flex items-center gap-3 mb-2">
                       <span className={`text-xs font-bold px-2 py-1 rounded ${
@@ -581,7 +581,7 @@ function FAQSection() {
   ];
 
   return (
-    <section id="faq" className="py-24 bg-gaming-800 border-y border-white/5">
+    <section id="faq" className="py-16 sm:py-20 lg:py-24 bg-gaming-800 border-y border-white/5">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl md:text-4xl font-display font-bold text-white mb-12 text-center">
           Frequently Asked Questions
@@ -602,14 +602,14 @@ function FAQItem({ question, answer }: { question: string, answer: string, key?:
   return (
     <div className="glass-card rounded-xl border border-white/5 overflow-hidden">
       <button 
-        className="w-full px-6 py-4 text-left flex items-center justify-between focus:outline-none"
+        className="w-full px-4 sm:px-6 py-4 text-left flex items-center justify-between gap-4 focus:outline-none"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span className="font-bold text-white">{question}</span>
+        <span className="font-bold text-sm sm:text-base text-white">{question}</span>
         <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
       {isOpen && (
-        <div className="px-6 pb-4 text-slate-400">
+        <div className="px-4 sm:px-6 pb-4 text-slate-400 text-sm sm:text-base">
           {answer}
         </div>
       )}
@@ -619,16 +619,16 @@ function FAQItem({ question, answer }: { question: string, answer: string, key?:
 
 function CTASection() {
   return (
-    <section className="py-32 relative overflow-hidden">
+    <section className="py-20 sm:py-24 lg:py-32 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent to-neon-blue/10 pointer-events-none" />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-        <h2 className="text-4xl md:text-6xl font-display font-bold text-white mb-6">
+        <h2 className="text-3xl sm:text-4xl md:text-6xl font-display font-bold text-white mb-6">
           Ready to drop in?
         </h2>
-        <p className="text-xl text-slate-400 mb-10">
+        <p className="text-base sm:text-lg md:text-xl text-slate-400 mb-8 sm:mb-10">
           Join thousands of players already finding their perfect squads on GamerBuddy.
         </p>
-        <button className="px-10 py-5 bg-gradient-to-r from-neon-blue to-neon-purple rounded-xl text-white font-bold text-xl hover:shadow-[0_0_40px_rgba(138,43,226,0.4)] transition-all transform hover:-translate-y-1">
+        <button className="w-full sm:w-auto px-6 sm:px-8 lg:px-10 py-3.5 sm:py-4 lg:py-5 bg-gradient-to-r from-neon-blue to-neon-purple rounded-xl text-white font-bold text-base sm:text-lg lg:text-xl hover:shadow-[0_0_40px_rgba(138,43,226,0.4)] transition-all transform hover:-translate-y-1">
           Create Free Account
         </button>
         <p className="mt-6 text-sm text-slate-500">No credit card required. Setup takes 2 minutes.</p>
@@ -639,7 +639,7 @@ function CTASection() {
 
 function Footer() {
   return (
-    <footer className="bg-[#050507] py-12 border-t border-white/5">
+    <footer className="bg-[#050507] py-10 sm:py-12 border-t border-white/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           <div className="col-span-1 md:col-span-2">
@@ -670,7 +670,7 @@ function Footer() {
             </ul>
           </div>
         </div>
-        <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row items-center justify-between text-sm text-slate-600">
+        <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row items-center justify-between text-sm text-slate-600 text-center md:text-left">
           <p>© 2026 GamerBuddy. All rights reserved.</p>
           <div className="flex gap-4 mt-4 md:mt-0">
             <span>Tashkent, Uzbekistan</span>
