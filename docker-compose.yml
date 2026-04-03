@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        GEMINI_API_KEY: ${GEMINI_API_KEY:?Set GEMINI_API_KEY in environment or .env}
+        GEMINI_API_KEY: ${GEMINI_API_KEY:-}
     ports:
       - "${WEB_PORT:-3000}:80"
     restart: unless-stopped

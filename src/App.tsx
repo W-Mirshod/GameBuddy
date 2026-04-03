@@ -99,11 +99,11 @@ function HeroSection() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="flex flex-col lg:flex-row items-center gap-10 sm:gap-12 lg:gap-8">
+        <div className="flex justify-center">
           
           {/* Left: Text Content */}
           <motion.div
-            className="lg:w-1/2 text-center lg:text-left"
+            className="w-full max-w-4xl text-center"
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
@@ -118,11 +118,11 @@ function HeroSection() {
               <span className="text-gradient">Find your squad.</span>
             </h1>
             
-            <p className="text-base sm:text-lg md:text-xl text-slate-400 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl text-slate-400 mb-10 max-w-xl mx-auto leading-relaxed">
               Find teammates by rank, role, language, and game. Build squads and join tournaments across Central Asia.
             </p>
             
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-12">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
               <button className="w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 bg-gradient-to-r from-neon-blue to-neon-purple rounded-xl text-white font-bold text-base sm:text-lg hover:shadow-[0_0_30px_rgba(0,240,255,0.4)] transition-all flex items-center justify-center gap-2 group">
                 Find Teammates
                 <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -134,7 +134,7 @@ function HeroSection() {
             </div>
             
             {/* Social Proof / Stats */}
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 sm:gap-6 text-sm text-slate-400">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 text-sm text-slate-400">
               <div className="flex -space-x-3">
                 {[1, 2, 3, 4].map((i) => (
                   <div key={i} className="w-10 h-10 rounded-full border-2 border-gaming-900 bg-gradient-to-br from-slate-700 to-slate-800" />
@@ -143,81 +143,6 @@ function HeroSection() {
               <div className="text-center sm:text-left">
                 <div className="text-white font-bold text-base">10,000+ Players</div>
                 <div>Waiting in lobby</div>
-              </div>
-            </div>
-          </motion.div>
-          
-          {/* Right: Product Visual (Player Cards) */}
-          <motion.div
-            className="lg:w-1/2 w-full relative"
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <div className="relative w-full max-w-md mx-auto aspect-[4/5]">
-              {/* Glow behind cards */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-neon-blue/30 to-neon-purple/30 blur-3xl rounded-full" />
-              
-              {/* Card 1 (Back) */}
-              <div className="absolute inset-0 transform translate-x-6 translate-y-6 rotate-6 glass-card rounded-2xl border border-white/10 bg-gaming-800/80 p-6 opacity-50 scale-95" />
-              
-              {/* Card 2 (Middle) */}
-              <div className="absolute inset-0 transform translate-x-3 translate-y-3 rotate-3 glass-card rounded-2xl border border-white/10 bg-gaming-800/90 p-6 opacity-80 scale-95" />
-              
-              {/* Card 3 (Front - Main Player Card) */}
-              <div className="absolute inset-0 glass-card rounded-2xl border border-neon-blue/30 bg-gaming-800 p-1 flex flex-col shadow-[0_0_40px_rgba(0,240,255,0.15)]">
-                <div className="relative h-40 sm:h-48 rounded-t-xl overflow-hidden bg-gradient-to-br from-slate-800 to-gaming-900 border-b border-white/10">
-                  <div className="absolute bottom-4 left-4 flex items-end gap-4">
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl border-2 border-neon-blue bg-gaming-700 shadow-[0_0_15px_rgba(0,240,255,0.5)]" />
-                    <div className="mb-1">
-                      <h3 className="text-xl sm:text-2xl font-display font-bold text-white flex items-center gap-2">
-                        ShadowStrike
-                        <ShieldCheck className="w-5 h-5 text-neon-blue" />
-                      </h3>
-                      <div className="text-sm text-slate-300 flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-green-400" /> Online • Tashkent
-                      </div>
-                    </div>
-                  </div>
-                  <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-md px-3 py-1 rounded-lg border border-white/10 text-xs font-bold text-white flex items-center gap-2">
-                    CS2
-                  </div>
-                </div>
-                
-                <div className="p-4 sm:p-6 flex-1 flex flex-col">
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 mb-6">
-                    <div className="bg-white/5 rounded-lg p-3 text-center border border-white/5">
-                      <div className="text-xs text-slate-400 mb-1">Rank</div>
-                      <div className="font-bold text-neon-purple">Global Elite</div>
-                    </div>
-                    <div className="bg-white/5 rounded-lg p-3 text-center border border-white/5">
-                      <div className="text-xs text-slate-400 mb-1">Role</div>
-                      <div className="font-bold text-white">Entry</div>
-                    </div>
-                    <div className="bg-white/5 rounded-lg p-3 text-center border border-white/5">
-                      <div className="text-xs text-slate-400 mb-1">Win Rate</div>
-                      <div className="font-bold text-green-400">58%</div>
-                    </div>
-                  </div>
-                  
-                  <div className="mb-6">
-                    <div className="text-xs text-slate-400 mb-2 uppercase tracking-wider font-bold">Languages</div>
-                    <div className="flex flex-wrap gap-2">
-                      <span className="px-3 py-1 rounded-md bg-white/5 border border-white/10 text-sm text-white">UZ</span>
-                      <span className="px-3 py-1 rounded-md bg-white/5 border border-white/10 text-sm text-white">RU</span>
-                      <span className="px-3 py-1 rounded-md bg-white/5 border border-white/10 text-sm text-white">EN</span>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-auto flex flex-col sm:flex-row gap-3">
-                    <button className="flex-1 py-3 bg-white/10 hover:bg-white/20 rounded-xl text-white font-bold transition-colors border border-white/10">
-                      Skip
-                    </button>
-                    <button className="flex-1 py-3 bg-neon-blue hover:bg-neon-blue/90 rounded-xl text-gaming-900 font-extrabold transition-colors shadow-[0_0_20px_rgba(0,240,255,0.4)]">
-                      Invite to Party
-                    </button>
-                  </div>
-                </div>
               </div>
             </div>
           </motion.div>
