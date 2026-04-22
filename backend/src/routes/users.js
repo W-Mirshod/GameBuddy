@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { prisma } from '../index.js';
+import { prisma } from '../db.js';
 import { requireAuth } from '../middleware/auth.js';
 import { connectOrResolveSteamId64, refreshSteamForUser } from '../services/userSteam.service.js';
 
@@ -9,7 +9,13 @@ export const usersRouter = Router();
 usersRouter.get('/me', requireAuth, async (req, res) => {
   const user = await prisma.user.findUnique({
     where: { id: req.user.userId },
-    include: { cs2Stats: true, dota2Stats: true, team: true, ownedTeam: true },
+    include: {
+      cs2Stats: true,
+      dota2Stats: true,
+      team: true,
+      ownedTeam: true,
+      registrations: { include: { tournament: true } },
+    },
   });
   res.json(user);
 });
@@ -27,7 +33,13 @@ usersRouter.put('/me', requireAuth, async (req, res) => {
   const updated = await prisma.user.update({
     where: { id: req.user.userId },
     data: parsed.data,
-    include: { cs2Stats: true, dota2Stats: true, team: true, ownedTeam: true },
+    include: {
+      cs2Stats: true,
+      dota2Stats: true,
+      team: true,
+      ownedTeam: true,
+      registrations: { include: { tournament: true } },
+    },
   });
   res.json(updated);
 });
@@ -65,7 +77,48 @@ usersRouter.get('/me/steam/refresh', requireAuth, async (req, res) => {
 });
 
 usersRouter.get('/search', requireAuth, async (req, res) => {
-  res.status(501).json({ error: 'not_implemented_yet' });
+  const game = req.query.game ? String(req.query.game) : null;
+  const language = req.query.language ? String(req.query.language) : null;
+  const activeHours = req.query.activeHours ? String(req.query.activeHours) : null;
+  const lookingFor = req.query.lookingFor ? String(req.query.lookingFor) : null;
+  const rankMin = req.query.rankMin != null ? Number(req.query.rankMin) : null;
+  const rankMax = req.query.rankMax != null ? Number(req.query.rankMax) : null;
+  const page = Math.max(1, Number(req.query.page) || 1);
+  const pageSize = Math.min(50, Math.max(1, Number(req.query.pageSize) || 20));
+  const skip = (page - 1) * pageSize;
+
+  const and = [{ id: { not: req.user.userId } }, { steamId64: { not: null } }];
+  if (game) and.push({ preferredGame: game });
+  if (language) and.push({ language: { contains: language, mode: 'insensitive' } });
+  if (activeHours) and.push({ activeHours });
+  if (lookingFor) and.push({ lookingFor });
+  if (game === 'cs2' && (rankMin != null || rankMax != null)) {
+    const kd = {};
+    if (rankMin != null && Number.isFinite(rankMin)) kd.gte = rankMin;
+    if (rankMax != null && Number.isFinite(rankMax)) kd.lte = rankMax;
+    if (Object.keys(kd).length) and.push({ cs2Stats: { kdRatio: kd } });
+  }
+  if (game === 'dota2' && (rankMin != null || rankMax != null)) {
+    const mmr = {};
+    if (rankMin != null && Number.isFinite(rankMin)) mmr.gte = rankMin;
+    if (rankMax != null && Number.isFinite(rankMax)) mmr.lte = rankMax;
+    if (Object.keys(mmr).length) and.push({ dota2Stats: { mmr } });
+  }
+
+  const where = { AND: and };
+
+  const [total, rows] = await Promise.all([
+    prisma.user.count({ where }),
+    prisma.user.findMany({
+      where,
+      skip,
+      take: pageSize,
+      include: { cs2Stats: true, dota2Stats: true },
+      orderBy: { updatedAt: 'desc' },
+    }),
+  ]);
+
+  res.json({ items: rows, total, page, pageSize });
 });
 
 usersRouter.put('/me/team/leave', requireAuth, async (req, res) => {
@@ -79,4 +132,3 @@ usersRouter.put('/me/team/leave', requireAuth, async (req, res) => {
   await prisma.user.update({ where: { id: me.id }, data: { teamId: null } });
   res.json({ ok: true });
 });
-

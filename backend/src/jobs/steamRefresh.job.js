@@ -1,5 +1,5 @@
 import { createQueue } from './queue.js';
-import { prisma } from '../index.js';
+import { prisma } from '../db.js';
 import { refreshSteamForUser } from '../services/userSteam.service.js';
 
 export const steamRefreshQueue = createQueue('steam_refresh');

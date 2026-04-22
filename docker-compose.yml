@@ -9,12 +9,22 @@ services:
       - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ggarena -d ggarena']
+      interval: 5s
+      timeout: 5s
+      retries: 10
     restart: unless-stopped
 
   redis:
     image: redis:7-alpine
     ports:
       - "${REDIS_PORT:-6379}:6379"
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 10
     restart: unless-stopped
 
   backend:
@@ -30,15 +40,20 @@ services:
       ADMIN_TELEGRAM_IDS: ${ADMIN_TELEGRAM_IDS}
       STEAM_API_KEY: ${STEAM_API_KEY}
       GCP_PROJECT_ID: ${GCP_PROJECT_ID}
+      GCP_LOCATION: ${GCP_LOCATION:-us-central1}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-1.5-flash}
       GCP_KEY_FILE: ${GCP_KEY_FILE}
       GCS_BUCKET: ${GCS_BUCKET}
       FRONTEND_URL: ${FRONTEND_URL}
       REFEREE_DASHBOARD_URL: ${REFEREE_DASHBOARD_URL}
+      API_PUBLIC_URL: ${API_PUBLIC_URL}
       PAYME_NUMBER: ${PAYME_NUMBER}
       PAYME_DISPLAY_NAME: ${PAYME_DISPLAY_NAME}
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     ports:
       - "3001:3001"
     restart: unless-stopped
@@ -47,9 +62,14 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:3001}
+        VITE_WS_URL: ${VITE_WS_URL:-http://localhost:3001}
+        VITE_TELEGRAM_BOT_USERNAME: ${VITE_TELEGRAM_BOT_USERNAME:-}
     environment:
       VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:3001}
       VITE_WS_URL: ${VITE_WS_URL:-http://localhost:3001}
+      VITE_TELEGRAM_BOT_USERNAME: ${VITE_TELEGRAM_BOT_USERNAME:-}
     ports:
       - "5173:5173"
     depends_on:
@@ -60,9 +80,14 @@ services:
     build:
       context: ./referee-dashboard
       dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:3001}
+        VITE_WS_URL: ${VITE_WS_URL:-http://localhost:3001}
+        VITE_TELEGRAM_BOT_USERNAME: ${VITE_TELEGRAM_BOT_USERNAME:-}
     environment:
       VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:3001}
       VITE_WS_URL: ${VITE_WS_URL:-http://localhost:3001}
+      VITE_TELEGRAM_BOT_USERNAME: ${VITE_TELEGRAM_BOT_USERNAME:-}
     ports:
       - "5174:5174"
     depends_on:
@@ -71,8 +96,8 @@ services:
 
   bot:
     build:
-      context: ./bot
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: bot/Dockerfile
     environment:
       BOT_TOKEN: ${BOT_TOKEN}
       DATABASE_URL: ${DATABASE_URL}

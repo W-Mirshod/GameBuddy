@@ -1,4 +1,4 @@
-import { prisma } from '../index.js';
+import { prisma } from '../db.js';
 import {
   resolveVanityUrl,
   getSteamProfile,
@@ -81,7 +81,13 @@ export async function refreshSteamForUser(userId, steamId64, { force }) {
 
   const updated = await prisma.user.findUnique({
     where: { id: userId },
-    include: { cs2Stats: true, dota2Stats: true, team: true, ownedTeam: true },
+    include: {
+      cs2Stats: true,
+      dota2Stats: true,
+      team: true,
+      ownedTeam: true,
+      registrations: { include: { tournament: true } },
+    },
   });
 
   return { ok: true, user: updated };

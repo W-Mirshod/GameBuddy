@@ -28,6 +28,11 @@ export function registerSocketHandlers(io) {
       socket.join('referee_room');
     });
 
+    socket.on('join_result_job', ({ jobId }) => {
+      if (!jobId) return;
+      socket.join(`result:job:${jobId}`);
+    });
+
     socket.on('disconnect', () => {
       console.log('[socket] disconnected', socket.user?.userId);
     });

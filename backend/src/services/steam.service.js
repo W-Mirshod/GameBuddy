@@ -61,9 +61,10 @@ export async function getCs2Stats(steamId64) {
 
 export async function getDota2ProfileAndRecent(steamId64) {
   const steamId32 = steamId64ToSteamId32(steamId64);
-  const [profileResp, matchesResp] = await Promise.all([
+  const [profileResp, matchesResp, heroesResp] = await Promise.all([
     openDotaApi.get(`/players/${steamId32}`),
     openDotaApi.get(`/players/${steamId32}/matches`, { params: { limit: 20, significant: 1 } }),
+    openDotaApi.get(`/players/${steamId32}/heroes`).catch(() => ({ data: [] })),
   ]);
 
   const profile = profileResp.data || {};
@@ -94,12 +95,20 @@ export async function getDota2ProfileAndRecent(steamId64) {
   const winRate = wins + losses > 0 ? (wins / (wins + losses)) * 100 : 0;
   const rankTier = Number(profile?.rank_tier || 0);
 
+  const heroesList = Array.isArray(heroesResp.data) ? heroesResp.data : [];
+  const topHero = [...heroesList].sort((a, b) => (b.games || 0) - (a.games || 0))[0];
+  const favoriteHero = topHero?.localized_name
+    ? String(topHero.localized_name)
+    : topHero?.hero_id != null
+      ? `hero_${topHero.hero_id}`
+      : null;
+
   return {
     mmr,
     wins,
     losses,
     winRate,
-    favoriteHero: null,
+    favoriteHero,
     rankTier,
   };
 }

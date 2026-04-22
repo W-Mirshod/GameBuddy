@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import { requireAuth } from '../middleware/auth.js';
 import { z } from 'zod';
-import { prisma } from '../index.js';
+import { prisma } from '../db.js';
+import { sendTelegramMessage } from '../services/notify.service.js';
 
 export const teamsRouter = Router();
 
@@ -73,6 +74,12 @@ teamsRouter.post('/:id/invite', requireAuth, async (req, res) => {
   });
 
   console.log('[teams] invite', teamId, username);
+  if (invitee?.telegramId) {
+    await sendTelegramMessage(
+      invitee.telegramId,
+      `You were invited to team "${team.name}". Open GG Arena to accept.`,
+    );
+  }
   res.json(invite);
 });
 
