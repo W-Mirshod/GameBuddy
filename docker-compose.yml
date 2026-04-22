@@ -1,10 +1,90 @@
 services:
-  web:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-ggarena}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ggarena}
+      POSTGRES_DB: ${POSTGRES_DB:-ggarena}
     ports:
-      - "${WEB_PORT:-3000}:80"
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      PORT: 3001
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      JWT_SECRET: ${JWT_SECRET}
+      BOT_TOKEN: ${BOT_TOKEN}
+      ADMIN_TELEGRAM_IDS: ${ADMIN_TELEGRAM_IDS}
+      STEAM_API_KEY: ${STEAM_API_KEY}
+      GCP_PROJECT_ID: ${GCP_PROJECT_ID}
+      GCP_KEY_FILE: ${GCP_KEY_FILE}
+      GCS_BUCKET: ${GCS_BUCKET}
+      FRONTEND_URL: ${FRONTEND_URL}
+      REFEREE_DASHBOARD_URL: ${REFEREE_DASHBOARD_URL}
+      PAYME_NUMBER: ${PAYME_NUMBER}
+      PAYME_DISPLAY_NAME: ${PAYME_DISPLAY_NAME}
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "3001:3001"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    environment:
+      VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:3001}
+      VITE_WS_URL: ${VITE_WS_URL:-http://localhost:3001}
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  referee-dashboard:
+    build:
+      context: ./referee-dashboard
+      dockerfile: Dockerfile
+    environment:
+      VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:3001}
+      VITE_WS_URL: ${VITE_WS_URL:-http://localhost:3001}
+    ports:
+      - "5174:5174"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  bot:
+    build:
+      context: ./bot
+      dockerfile: Dockerfile
+    environment:
+      BOT_TOKEN: ${BOT_TOKEN}
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      JWT_SECRET: ${JWT_SECRET}
+      FRONTEND_URL: ${FRONTEND_URL}
+      ADMIN_TELEGRAM_IDS: ${ADMIN_TELEGRAM_IDS}
+      PAYME_NUMBER: ${PAYME_NUMBER}
+      PAYME_DISPLAY_NAME: ${PAYME_DISPLAY_NAME}
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

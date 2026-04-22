@@ -1,0 +1,19 @@
+:root {
+  --gg-bg: #0f0f1a;
+  --gg-card: #1a1a2e;
+  --gg-border: #2a2a45;
+  --gg-primary: #e8ff47;
+  --gg-cs2: #ff6b35;
+  --gg-dota2: #c23b22;
+  --gg-success: #4caf50;
+  --gg-warning: #ff9800;
+  --gg-error: #f44336;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--gg-bg);
+}
+
