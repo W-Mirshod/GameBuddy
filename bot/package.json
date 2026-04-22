@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "node bot.js",
-    "dev": "node --watch bot.js"
+    "dev": "node --watch bot.js",
+    "postinstall": "npx prisma generate --schema=prisma/schema.prisma"
   },
   "dependencies": {
     "@prisma/client": "^6.16.2",

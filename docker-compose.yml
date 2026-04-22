@@ -17,6 +17,7 @@ services:
     restart: unless-stopped
 
   backend:
+    container_name: gamebuddy-backend
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -42,24 +43,31 @@ services:
         condition: service_healthy
     ports:
       - "3101:3001"
+    networks:
+      - default
+      - web
     restart: unless-stopped
 
   frontend:
+    container_name: gamebuddy-frontend
     build:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:3101}
-        VITE_WS_URL: ${VITE_WS_URL:-http://localhost:3101}
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-https://ggarena-api.w-mirshod.com}
+        VITE_WS_URL: ${VITE_WS_URL:-https://ggarena-api.w-mirshod.com}
         VITE_TELEGRAM_BOT_USERNAME: ${VITE_TELEGRAM_BOT_USERNAME:-}
     environment:
-      VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:3101}
-      VITE_WS_URL: ${VITE_WS_URL:-http://localhost:3101}
+      VITE_API_BASE_URL: ${VITE_API_BASE_URL:-https://ggarena-api.w-mirshod.com}
+      VITE_WS_URL: ${VITE_WS_URL:-https://ggarena-api.w-mirshod.com}
       VITE_TELEGRAM_BOT_USERNAME: ${VITE_TELEGRAM_BOT_USERNAME:-}
     ports:
       - "5173:5173"
     depends_on:
       - backend
+    networks:
+      - default
+      - web
     restart: unless-stopped
 
   referee-dashboard:
@@ -95,6 +103,11 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
+
+networks:
+  web:
+    external: true
+    name: web
 
 volumes:
   postgres_data:

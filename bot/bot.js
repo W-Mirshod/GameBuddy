@@ -1,6 +1,12 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
 import TelegramBot from 'node-telegram-bot-api';
 import { PrismaClient } from '@prisma/client';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: join(__dirname, '..', '.env') });
+dotenv.config({ path: join(__dirname, '.env') });
 
 const token = process.env.BOT_TOKEN;
 if (!token) {
@@ -25,9 +31,31 @@ function isAdmin(msg) {
 }
 
 const miniUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-const miniAppHttps = miniUrl.startsWith('https://');
+function isHttpsUrl(u) {
+  try {
+    return new URL(u).protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+const miniAppHttps = isHttpsUrl(miniUrl);
 
-bot.onText(/\/start/, async (msg) => {
+function wrapOnText(name, regexp, fn) {
+  return bot.onText(regexp, async (msg, match) => {
+    try {
+      await fn(msg, match);
+    } catch (e) {
+      console.log(`[bot] ${name} error`, e?.response?.body || e?.message || e);
+      try {
+        if (msg?.chat?.id) await bot.sendMessage(msg.chat.id, 'Server error, try again.');
+      } catch (sendErr) {
+        console.log(`[bot] ${name} reply failed`, sendErr?.message || sendErr);
+      }
+    }
+  });
+}
+
+wrapOnText('start', /^\/start(?:@\S+)?(?:\s+.*)?$/i, async (msg) => {
   const chatId = msg.chat.id;
   const text = 'Welcome to GG Arena.';
   if (miniAppHttps) {
@@ -50,14 +78,14 @@ bot.onText(/\/start/, async (msg) => {
   );
 });
 
-bot.onText(/\/help/, async (msg) => {
+wrapOnText('help', /^\/help(?:@\S+)?$/i, async (msg) => {
   await bot.sendMessage(
     msg.chat.id,
     'Commands: /start /tournaments /stats /help\nAdmins: /admin tournaments, /admin confirm [escrowId], /admin refund [escrowId], /admin setreferee [telegramId]',
   );
 });
 
-bot.onText(/\/tournaments/, async (msg) => {
+wrapOnText('tournaments', /^\/tournaments(?:@\S+)?$/i, async (msg) => {
   const rows = await prisma.tournament.findMany({
     where: { status: 'open' },
     orderBy: { dateTime: 'asc' },
@@ -71,7 +99,7 @@ bot.onText(/\/tournaments/, async (msg) => {
   await bot.sendMessage(msg.chat.id, `Upcoming:\n${lines.join('\n')}`);
 });
 
-bot.onText(/\/stats/, async (msg) => {
+wrapOnText('stats', /^\/stats(?:@\S+)?$/i, async (msg) => {
   const tg = String(msg.from?.id);
   const user = await prisma.user.findUnique({
     where: { telegramId: tg },
@@ -85,14 +113,14 @@ bot.onText(/\/stats/, async (msg) => {
   await bot.sendMessage(msg.chat.id, `Points (sum): ${pts}\nSteam: ${user.steamId64 ? 'linked' : 'not linked'}`);
 });
 
-bot.onText(/\/admin tournaments/, async (msg) => {
+wrapOnText('admin t', /^\/admin tournaments(?:@\S+)?$/i, async (msg) => {
   if (!isAdmin(msg)) return;
   const rows = await prisma.tournament.findMany({ orderBy: { id: 'desc' }, take: 20 });
   const lines = rows.map((t) => `#${t.id} ${t.title} [${t.status}]`);
   await bot.sendMessage(msg.chat.id, lines.join('\n') || 'none');
 });
 
-bot.onText(/\/admin confirm (\d+)/, async (msg, match) => {
+wrapOnText('admin confirm', /^\/admin confirm (\d+)(?:@\S+)?$/i, async (msg, match) => {
   if (!isAdmin(msg)) return;
   const escrowId = Number(match[1]);
   const escrow = await prisma.escrow.findUnique({ where: { id: escrowId }, include: { tournament: true } });
@@ -108,7 +136,7 @@ bot.onText(/\/admin confirm (\d+)/, async (msg, match) => {
   await bot.sendMessage(msg.chat.id, `Confirmed escrow #${escrowId}`);
 });
 
-bot.onText(/\/admin refund (\d+)/, async (msg, match) => {
+wrapOnText('admin refund', /^\/admin refund (\d+)(?:@\S+)?$/i, async (msg, match) => {
   if (!isAdmin(msg)) return;
   const escrowId = Number(match[1]);
   const escrow = await prisma.escrow.findUnique({ where: { id: escrowId } });
@@ -127,9 +155,9 @@ bot.onText(/\/admin refund (\d+)/, async (msg, match) => {
   await bot.sendMessage(msg.chat.id, `Refunded escrow #${escrowId}`);
 });
 
-bot.onText(/\/admin setreferee (.+)/, async (msg, match) => {
+wrapOnText('admin setreferee', /^\/admin setreferee (\d+)(?:@\S+)?$/i, async (msg, match) => {
   if (!isAdmin(msg)) return;
-  const telegramId = match[1].trim();
+  const telegramId = match[1];
   await prisma.user.updateMany({
     where: { telegramId },
     data: { isReferee: true },
@@ -138,13 +166,16 @@ bot.onText(/\/admin setreferee (.+)/, async (msg, match) => {
 });
 
 async function main() {
+  const me = await bot.getMe();
+  const wh = await bot.getWebHookInfo();
+  console.log('[bot] getMe', me.username, 'pending_updates', wh.pending_update_count, 'webhook', wh.url || '(empty)');
   try {
     await bot.deleteWebHook({ drop_pending_updates: false });
   } catch (e) {
     console.log('[bot] deleteWebHook failed', e?.message || e);
   }
   await bot.startPolling();
-  console.log('[bot] started');
+  console.log('[bot] started polling');
 }
 
 main().catch((e) => {
