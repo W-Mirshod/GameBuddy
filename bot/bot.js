@@ -9,7 +9,11 @@ if (!token) {
 }
 
 const prisma = new PrismaClient();
-const bot = new TelegramBot(token, { polling: true });
+const bot = new TelegramBot(token, { polling: { autoStart: false } });
+
+bot.on('polling_error', (err) => {
+  console.log('[bot] polling_error', err?.message || err);
+});
 
 const adminIds = (process.env.ADMIN_TELEGRAM_IDS || '')
   .split(',')
@@ -21,14 +25,29 @@ function isAdmin(msg) {
 }
 
 const miniUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+const miniAppHttps = miniUrl.startsWith('https://');
 
 bot.onText(/\/start/, async (msg) => {
   const chatId = msg.chat.id;
-  await bot.sendMessage(chatId, 'Welcome to GG Arena.', {
-    reply_markup: {
-      inline_keyboard: [[{ text: 'Open GG Arena', web_app: { url: miniUrl } }]],
-    },
-  });
+  const text = 'Welcome to GG Arena.';
+  if (miniAppHttps) {
+    try {
+      await bot.sendMessage(chatId, text, {
+        reply_markup: {
+          inline_keyboard: [[{ text: 'Open GG Arena', web_app: { url: miniUrl } }]],
+        },
+      });
+      return;
+    } catch (e) {
+      console.log('[bot] /start web_app failed', e?.response?.body || e?.message || e);
+    }
+  }
+  await bot.sendMessage(
+    chatId,
+    miniAppHttps
+      ? text
+      : `${text}\n\nSet FRONTEND_URL to a public https:// URL for the Open Mini App button in chat.`,
+  );
 });
 
 bot.onText(/\/help/, async (msg) => {
@@ -118,4 +137,17 @@ bot.onText(/\/admin setreferee (.+)/, async (msg, match) => {
   await bot.sendMessage(msg.chat.id, `Referee flag set for telegramId ${telegramId}`);
 });
 
-console.log('[bot] started');
+async function main() {
+  try {
+    await bot.deleteWebHook({ drop_pending_updates: false });
+  } catch (e) {
+    console.log('[bot] deleteWebHook failed', e?.message || e);
+  }
+  await bot.startPolling();
+  console.log('[bot] started');
+}
+
+main().catch((e) => {
+  console.error('[bot] fatal', e);
+  process.exit(1);
+});
