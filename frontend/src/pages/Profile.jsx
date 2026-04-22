@@ -84,97 +84,113 @@ export function Profile() {
   const stats = user.preferredGame === 'dota2' ? user.dota2Stats : user.cs2Stats;
 
   return (
-    <div style={{ padding: 12, paddingBottom: 88 }}>
-      <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-        <img src={user.steamAvatar || 'https://via.placeholder.com/56'} alt="" width={56} height={56} style={{ borderRadius: 12 }} />
+    <div className="gg-page">
+      {/* Profile Header */}
+      <div className="gg-profile-header">
+        <img
+          src={user.steamAvatar || 'https://via.placeholder.com/56'}
+          alt=""
+          width={56}
+          height={56}
+          className="gg-avatar"
+        />
         <div>
-          <div style={{ color: '#fff', fontWeight: 700 }}>{user.firstName}</div>
-          <div style={{ color: '#888' }}>@{user.username || '—'}</div>
+          <h1 className="gg-profile-name">{user.firstName}</h1>
+          <div className="gg-profile-handle">@{user.username || '—'}</div>
         </div>
       </div>
 
-      {!user.steamId64 ? (
-        <div style={{ marginTop: 12, padding: 10, background: 'var(--gg-card)', borderRadius: 10, color: '#ffeb3b' }}>
-          Connect Steam to unlock stats →
-        </div>
-      ) : null}
+      {/* Steam Warning */}
+      {!user.steamId64 ? <div className="gg-alert">Connect Steam to unlock stats & tournaments</div> : null}
 
-      <div style={{ marginTop: 16, padding: 12, background: 'var(--gg-card)', borderRadius: 12, border: '1px solid var(--gg-border)' }}>
-        <div style={{ color: '#fff', fontWeight: 700, marginBottom: 8 }}>Steam</div>
+      {/* Steam Card */}
+      <div className="gg-glass gg-glass--panel" style={{ marginTop: 16 }}>
+        <div className="gg-panel-title">Steam Account</div>
         {!user.steamId64 ? (
           <>
             <input
               value={steamInput}
               onChange={(e) => setSteamInput(e.target.value)}
               placeholder="SteamID64 or vanity URL"
-              style={{ width: '100%', padding: 8, borderRadius: 8, border: '1px solid var(--gg-border)', background: '#111', color: '#fff' }}
+              className="gg-input"
             />
-            <button type="button" onClick={connectSteam} style={{ marginTop: 8, padding: 8, width: '100%', fontWeight: 700 }}>
-              Connect
+            <button type="button" onClick={connectSteam} className="gg-btn-inline">
+              Connect Steam
             </button>
           </>
         ) : (
-          <div style={{ color: '#aaa' }}>
-            {user.steamUsername}{' '}
-            <button type="button" onClick={() => api.get('/users/me/steam/refresh').then(() => refreshUser())}>
-              Refresh stats
+          <div className="gg-steam-line">
+            {user.steamUsername}
+            <button
+              type="button"
+              onClick={() => api.get('/users/me/steam/refresh').then(() => refreshUser())}
+            >
+              Refresh
             </button>
           </div>
         )}
       </div>
 
-      <div style={{ marginTop: 16, padding: 12, background: 'var(--gg-card)', borderRadius: 12, border: '1px solid var(--gg-border)' }}>
-        <div style={{ color: '#fff', fontWeight: 700, marginBottom: 8 }}>Stats</div>
+      {/* Stats Card */}
+      <div className="gg-glass gg-glass--panel" style={{ marginTop: 12 }}>
+        <div className="gg-panel-title">Game Stats</div>
         {user.preferredGame === 'dota2' && stats ? (
-          <div style={{ color: '#ccc' }}>
+          <div className="gg-stats-line">
             <RankBadge medal={stats.rankMedal} /> MMR {stats.mmr} · WR {stats.winRate?.toFixed?.(0)}%
           </div>
         ) : null}
         {user.preferredGame === 'cs2' && stats ? (
-          <div style={{ color: '#ccc' }}>
+          <div className="gg-stats-line">
             KD {stats.kdRatio?.toFixed?.(2)} · WR {stats.winRate?.toFixed?.(0)}% · Wins {stats.wins}
           </div>
         ) : null}
+        {!stats ? (
+          <div className="gg-muted">Connect Steam to see your stats</div>
+        ) : null}
       </div>
 
-      <div style={{ marginTop: 16, padding: 12, background: 'var(--gg-card)', borderRadius: 12, border: '1px solid var(--gg-border)' }}>
-        <div style={{ color: '#fff', fontWeight: 700, marginBottom: 8 }}>Preferences</div>
+      {/* Preferences Card */}
+      <div className="gg-glass gg-glass--panel" style={{ marginTop: 12 }}>
+        <div className="gg-panel-title">Preferences</div>
         <select
           value={prefs.preferredGame}
           onChange={(e) => setPrefs({ ...prefs, preferredGame: e.target.value })}
-          style={{ width: '100%', padding: 8 }}
+          className="gg-select"
         >
           <option value="cs2">CS2</option>
           <option value="dota2">Dota 2</option>
         </select>
-        <input
-          placeholder="Language"
-          value={prefs.language}
-          onChange={(e) => setPrefs({ ...prefs, language: e.target.value })}
-          style={{ width: '100%', marginTop: 8, padding: 8 }}
-        />
-        <input
-          placeholder="Active hours"
-          value={prefs.activeHours}
-          onChange={(e) => setPrefs({ ...prefs, activeHours: e.target.value })}
-          style={{ width: '100%', marginTop: 8, padding: 8 }}
-        />
-        <input
-          placeholder="Looking for"
-          value={prefs.lookingFor}
-          onChange={(e) => setPrefs({ ...prefs, lookingFor: e.target.value })}
-          style={{ width: '100%', marginTop: 8, padding: 8 }}
-        />
+        <div className="gg-field-stack">
+          <input
+            placeholder="Language (e.g. English, Russian)"
+            value={prefs.language}
+            onChange={(e) => setPrefs({ ...prefs, language: e.target.value })}
+            className="gg-input"
+          />
+          <input
+            placeholder="Active hours (e.g. 18:00–23:00)"
+            value={prefs.activeHours}
+            onChange={(e) => setPrefs({ ...prefs, activeHours: e.target.value })}
+            className="gg-input"
+          />
+          <input
+            placeholder="Looking for (e.g. Competitive team)"
+            value={prefs.lookingFor}
+            onChange={(e) => setPrefs({ ...prefs, lookingFor: e.target.value })}
+            className="gg-input"
+          />
+        </div>
       </div>
 
-      <div style={{ marginTop: 16, padding: 12, background: 'var(--gg-card)', borderRadius: 12, border: '1px solid var(--gg-border)' }}>
-        <div style={{ color: '#fff', fontWeight: 700, marginBottom: 8 }}>My Team</div>
+      {/* Team Card */}
+      <div className="gg-glass gg-glass--panel" style={{ marginTop: 12 }}>
+        <div className="gg-panel-title">My Team</div>
         {!user.teamId ? (
-          <button type="button" onClick={createTeam}>
-            Create team
+          <button type="button" onClick={createTeam} className="gg-btn-inline">
+            Create Team
           </button>
         ) : (
-          <div style={{ color: '#ccc' }}>Team #{user.teamId}</div>
+          <div className="gg-stats-line">Team #{user.teamId}</div>
         )}
       </div>
     </div>

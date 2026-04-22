@@ -3,16 +3,11 @@ import { rankColor } from '../utils/rankUtils.js';
 
 export function RankBadge({ medal }) {
   if (!medal) return null;
+  const col = rankColor(medal);
   return (
     <span
-      style={{
-        padding: '2px 8px',
-        borderRadius: 6,
-        fontSize: 11,
-        fontWeight: 700,
-        color: rankColor(medal),
-        border: `1px solid ${rankColor(medal)}`,
-      }}
+      className="gg-rbadge"
+      style={{ color: col, borderColor: col, border: `1px solid ${col}` }}
     >
       {medal}
     </span>

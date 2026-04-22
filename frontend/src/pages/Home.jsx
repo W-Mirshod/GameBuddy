@@ -40,69 +40,107 @@ export function Home() {
     };
   }, [filter]);
 
+  const filters = [
+    { key: 'cs2', label: 'CS2' },
+    { key: 'dota2', label: 'DOTA 2' },
+    { key: 'all', label: 'All Games' },
+  ];
+
   return (
-    <div style={{ padding: 12, paddingBottom: 88 }}>
-      <div style={{ color: '#fff', fontWeight: 800, fontSize: 20 }}>GG Arena</div>
-      <div style={{ color: '#888', marginTop: 4 }}>CS2 & Dota 2 Tournaments</div>
-      <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
-        {['cs2', 'dota2', 'all'].map((g) => (
+    <div className="gg-page">
+      {/* Hero */}
+      <div className="gg-page-header">
+        <h1 className="gg-hero">GG Arena</h1>
+        <p className="gg-hero-sub">Competitive CS2 & Dota 2 Tournaments</p>
+      </div>
+
+      {/* Game Filter */}
+      <div className="gg-segment-row">
+        {filters.map(({ key, label }) => (
           <button
-            key={g}
+            key={key}
             type="button"
-            onClick={() => setFilter(g)}
-            style={{
-              padding: '6px 12px',
-              borderRadius: 8,
-              border: '1px solid var(--gg-border)',
-              background: filter === g ? 'var(--gg-primary)' : 'var(--gg-card)',
-              color: filter === g ? '#000' : '#fff',
-            }}
+            onClick={() => setFilter(key)}
+            className={`gg-segment${filter === key ? ' gg-segment--active' : ''}`}
           >
-            {g === 'all' ? 'All' : g === 'cs2' ? 'CS2' : 'DOTA 2'}
+            {label}
           </button>
         ))}
       </div>
 
-      {loading ? <div style={{ color: '#888', marginTop: 16 }}>Loading…</div> : null}
+      {loading ? <div className="gg-loading">Loading tournaments…</div> : null}
 
-      <section style={{ marginTop: 20 }}>
-        <div style={{ color: 'var(--gg-success)', fontWeight: 700, marginBottom: 8 }}>● Live Now</div>
-        {!live.length ? (
-          <div style={{ color: '#666' }}>No live tournaments</div>
-        ) : (
-          live.map((t) => <TournamentCard key={t.id} t={t} />)
-        )}
-      </section>
-
-      <section style={{ marginTop: 20 }}>
-        <div style={{ color: '#fff', fontWeight: 700, marginBottom: 8 }}>Upcoming</div>
-        <div style={{ display: 'flex', gap: 10, overflowX: 'auto' }}>
-          {upcoming.map((t) => (
-            <TournamentCard key={t.id} t={t} />
-          ))}
+      {/* Live Now */}
+      <section className="gg-section">
+        <div className="gg-section-title gg-section-title--live">
+          <span className="gg-live-dot" aria-hidden />
+          Live Now
         </div>
-      </section>
-
-      <section style={{ marginTop: 20 }}>
-        <div style={{ color: '#fff', fontWeight: 700, marginBottom: 8 }}>Recent Winners</div>
-        {!winners.length ? (
-          <div style={{ color: '#666' }}>None yet</div>
+        {!live.length ? (
+          <div className="gg-muted">No live tournaments right now</div>
         ) : (
-          winners.map((r) => (
-            <div key={r.id} style={{ color: '#ccc', marginBottom: 6 }}>
-              <GameBadge game={r.tournament.game} /> {r.team?.name} — {r.tournament?.title}
-            </div>
-          ))
+          <div className="gg-vstack">
+            {live.map((t) => (
+              <TournamentCard key={t.id} t={t} />
+            ))}
+          </div>
         )}
       </section>
 
-      <section style={{ marginTop: 20 }}>
-        <div style={{ color: '#fff', fontWeight: 700, marginBottom: 8 }}>Top This Week</div>
-        {top.slice(0, 5).map((row, i) => (
-          <div key={row.id} style={{ color: '#aaa', fontSize: 13 }}>
-            #{i + 1} {row.user?.firstName} — {row.points} pts
+      {/* Upcoming */}
+      <section className="gg-section">
+        <div className="gg-section-title">Upcoming</div>
+        {upcoming.length === 0 ? (
+          <div className="gg-muted">No upcoming tournaments</div>
+        ) : (
+          <div className="gg-scroll-x">
+            {upcoming.map((t) => (
+              <TournamentCard key={t.id} t={t} />
+            ))}
           </div>
-        ))}
+        )}
+      </section>
+
+      {/* Recent Winners */}
+      <section className="gg-section">
+        <div className="gg-section-title">Recent Winners</div>
+        {!winners.length ? (
+          <div className="gg-muted">No winners yet — be the first!</div>
+        ) : (
+          <div className="gg-vstack">
+            {winners.map((r) => (
+              <div key={r.id} className="gg-winner-row">
+                <span className="gg-winner-icon">🏆</span>
+                <div className="gg-winner-info">
+                  <strong>{r.team?.name}</strong> — {r.tournament?.title}
+                </div>
+                <GameBadge game={r.tournament.game} />
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Top This Week */}
+      <section className="gg-section">
+        <div className="gg-section-title">Top This Week</div>
+        {top.length === 0 ? (
+          <div className="gg-muted">No rankings yet</div>
+        ) : (
+          <div className="gg-vstack">
+            {top.slice(0, 5).map((row, i) => (
+              <div key={row.id} className="gg-lb-row">
+                {i < 3 ? (
+                  <span className={`gg-rank-badge gg-rank-${i + 1}`}>{i + 1}</span>
+                ) : (
+                  <span className="gg-lb-rank">#{i + 1}</span>
+                )}
+                <span className="gg-lb-name">{row.user?.firstName}</span>
+                <span className="gg-lb-points">{row.points} pts</span>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );

@@ -25,29 +25,34 @@ export function FindTeammates() {
     };
   }, [game]);
 
+  const games = [
+    { key: 'cs2', label: 'CS2' },
+    { key: 'dota2', label: 'Dota 2' },
+  ];
+
   return (
-    <div style={{ padding: 12, paddingBottom: 88 }}>
-      <div style={{ color: '#fff', fontWeight: 800, fontSize: 18 }}>Find Teammates</div>
-      <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
-        {['cs2', 'dota2'].map((g) => (
+    <div className="gg-page">
+      <h1 className="gg-page-title">Find Teammates</h1>
+
+      <div className="gg-segment-row">
+        {games.map(({ key, label }) => (
           <button
-            key={g}
+            key={key}
             type="button"
-            onClick={() => setGame(g)}
-            style={{
-              padding: '6px 12px',
-              borderRadius: 8,
-              border: '1px solid var(--gg-border)',
-              background: game === g ? 'var(--gg-primary)' : 'var(--gg-card)',
-              color: game === g ? '#000' : '#fff',
-            }}
+            onClick={() => setGame(key)}
+            className={`gg-segment${game === key ? ' gg-segment--active' : ''}`}
           >
-            {g === 'cs2' ? 'CS2' : 'DOTA 2'}
+            {label}
           </button>
         ))}
       </div>
-      {loading ? <div style={{ color: '#888', marginTop: 16 }}>Loading…</div> : null}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 16 }}>
+
+      {loading ? <div className="gg-loading">Searching players…</div> : null}
+
+      <div className="gg-vstack" style={{ marginTop: 8 }}>
+        {items.length === 0 && !loading ? (
+          <div className="gg-muted">No players found for this game</div>
+        ) : null}
         {items.map((u) => (
           <PlayerCard key={u.id} u={u} />
         ))}

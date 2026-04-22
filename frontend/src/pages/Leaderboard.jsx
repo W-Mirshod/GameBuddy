@@ -25,68 +25,74 @@ export function Leaderboard() {
     };
   }, [game, period]);
 
+  const periods = [
+    { key: 'all', label: 'All Time' },
+    { key: 'week', label: 'This Week' },
+    { key: 'month', label: 'This Month' },
+  ];
+
+  const games = [
+    { key: 'overall', label: 'Overall' },
+    { key: 'cs2', label: 'CS2' },
+    { key: 'dota2', label: 'Dota 2' },
+  ];
+
   return (
-    <div style={{ padding: 12, paddingBottom: 88 }}>
-      <div style={{ color: '#fff', fontWeight: 800, fontSize: 18 }}>Leaderboard</div>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 12 }}>
-        {['all', 'week', 'month'].map((p) => (
+    <div className="gg-page">
+      <h1 className="gg-page-title">Leaderboard</h1>
+
+      {/* Period Filter */}
+      <div className="gg-segment-row">
+        {periods.map(({ key, label }) => (
           <button
-            key={p}
+            key={key}
             type="button"
-            onClick={() => setPeriod(p)}
-            style={{
-              padding: '4px 10px',
-              borderRadius: 8,
-              border: '1px solid var(--gg-border)',
-              background: period === p ? 'var(--gg-primary)' : 'var(--gg-card)',
-              color: period === p ? '#000' : '#fff',
-            }}
+            onClick={() => setPeriod(key)}
+            className={`gg-segment${period === key ? ' gg-segment--active' : ''}`}
           >
-            {p}
+            {label}
           </button>
         ))}
       </div>
-      <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-        {['overall', 'cs2', 'dota2'].map((g) => (
+
+      {/* Game Filter */}
+      <div className="gg-segment-row" style={{ marginTop: 0 }}>
+        {games.map(({ key, label }) => (
           <button
-            key={g}
+            key={key}
             type="button"
-            onClick={() => setGame(g)}
-            style={{
-              padding: '4px 10px',
-              borderRadius: 8,
-              border: '1px solid var(--gg-border)',
-              background: game === g ? 'var(--gg-primary)' : 'var(--gg-card)',
-              color: game === g ? '#000' : '#fff',
-            }}
+            onClick={() => setGame(key)}
+            className={`gg-segment${game === key ? ' gg-segment--active' : ''}`}
           >
-            {g}
+            {label}
           </button>
         ))}
       </div>
-      {loading ? <div style={{ color: '#888', marginTop: 12 }}>Loading…</div> : null}
-      <div style={{ marginTop: 12 }}>
+
+      {loading ? <div className="gg-loading">Loading rankings…</div> : null}
+
+      {/* Rankings List */}
+      <div className="gg-vstack" style={{ marginTop: 8 }}>
+        {(data.top || []).length === 0 && !loading ? (
+          <div className="gg-muted">No rankings for this period</div>
+        ) : null}
         {(data.top || []).map((row, i) => (
-          <div
-            key={row.id}
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              padding: '8px 0',
-              borderBottom: '1px solid var(--gg-border)',
-              color: '#ccc',
-            }}
-          >
-            <span>
-              #{i + 1} {row.user?.firstName}
-            </span>
-            <span>{row.points} pts</span>
+          <div key={row.id} className="gg-lb-row">
+            {i < 3 ? (
+              <span className={`gg-rank-badge gg-rank-${i + 1}`}>{i + 1}</span>
+            ) : (
+              <span className="gg-lb-rank">#{i + 1}</span>
+            )}
+            <span className="gg-lb-name">{row.user?.firstName}</span>
+            <span className="gg-lb-points">{row.points} pts</span>
           </div>
         ))}
       </div>
+
+      {/* My Rank */}
       {data.me?.rank ? (
-        <div style={{ marginTop: 16, color: 'var(--gg-primary)' }}>
-          You: #{data.me.rank} — {data.me.points} pts
+        <div className="gg-me-rank">
+          Your Rank: #{data.me.rank} — {data.me.points} pts
         </div>
       ) : null}
     </div>

@@ -64,89 +64,103 @@ export function Tournaments() {
 
   const split = detail ? prizeSplit(detail.prizePool) : null;
 
+  const tabs = [
+    { key: 'upcoming', label: 'Upcoming' },
+    { key: 'live', label: 'Live' },
+    { key: 'my', label: 'My Tourneys' },
+  ];
+
   return (
-    <div style={{ padding: 12, paddingBottom: 88 }}>
-      <div style={{ display: 'flex', gap: 8 }}>
-        {['upcoming', 'live', 'my'].map((t) => (
+    <div className="gg-page">
+      {/* Tab Filter */}
+      <div className="gg-segment-row">
+        {tabs.map(({ key, label }) => (
           <button
-            key={t}
+            key={key}
             type="button"
-            onClick={() => setTab(t)}
-            style={{
-              padding: '6px 10px',
-              borderRadius: 8,
-              border: '1px solid var(--gg-border)',
-              background: tab === t ? 'var(--gg-primary)' : 'var(--gg-card)',
-              color: tab === t ? '#000' : '#fff',
-              textTransform: 'capitalize',
-            }}
+            onClick={() => { setTab(key); setDetail(null); }}
+            className={`gg-segment${tab === key ? ' gg-segment--active' : ''}`}
           >
-            {t}
+            {label}
           </button>
         ))}
       </div>
-      {loading ? <div style={{ color: '#888', marginTop: 12 }}>Loading…</div> : null}
+
+      {loading ? <div className="gg-loading">Loading tournaments…</div> : null}
+
+      {/* Tournament List */}
       {!detail ? (
-        <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div className="gg-stack">
           {tab === 'my' ? (
             (user?.registrations || []).length ? (
               user.registrations.map((r) => (
                 <div
                   key={r.id}
+                  className="gg-glass gg-regcard"
                   onClick={() => r.tournament && openDetail(r.tournament)}
-                  style={{
-                    padding: 12,
-                    borderRadius: 12,
-                    background: 'var(--gg-card)',
-                    border: '1px solid var(--gg-border)',
-                    color: '#ccc',
-                  }}
+                  style={{ cursor: r.tournament ? 'pointer' : 'default' }}
                 >
-                  <div style={{ color: '#fff', fontWeight: 600 }}>{r.tournament?.title}</div>
-                  <div style={{ fontSize: 12, marginTop: 4 }}>Payment: {r.paymentStatus}</div>
+                  <div className="gg-regcard-title">{r.tournament?.title}</div>
+                  <div className="gg-regcard-status">
+                    Payment: <span>{r.paymentStatus}</span>
+                  </div>
                 </div>
               ))
             ) : (
-              <div style={{ color: '#666' }}>No registrations</div>
+              <div className="gg-hint">No tournament registrations yet</div>
             )
           ) : (
-            list.map((t) => <TournamentCard key={t.id} t={t} onOpen={openDetail} />)
+            list.length === 0 && !loading ? (
+              <div className="gg-muted">No {tab} tournaments</div>
+            ) : (
+              list.map((t) => <TournamentCard key={t.id} t={t} onOpen={openDetail} />)
+            )
           )}
         </div>
       ) : (
-        <div style={{ marginTop: 12 }}>
-          <button type="button" onClick={() => setDetail(null)} style={{ color: 'var(--gg-primary)' }}>
-            ← Back
+        /* Tournament Detail */
+        <div style={{ marginTop: 8 }}>
+          <button type="button" onClick={() => setDetail(null)} className="gg-back-link">
+            ← Back to list
           </button>
-          <div style={{ color: '#fff', fontWeight: 700, marginTop: 8 }}>{detail.title}</div>
-          <div style={{ color: '#888', fontSize: 13, marginTop: 4 }}>{formatUzt(detail.dateTime)}</div>
+
+          <h1 className="gg-title-lg">{detail.title}</h1>
+          <div className="gg-detail-meta">{formatUzt(detail.dateTime)}</div>
+
+          {/* Prize Pool */}
           {split ? (
-            <div style={{ color: '#aaa', fontSize: 13, marginTop: 8 }}>
-              Prize pool ${detail.prizePool?.toFixed(0)} — 1st ${split.first.toFixed(0)} / 2nd ${split.second.toFixed(0)} / 3rd{' '}
-              {split.third.toFixed(0)}
+            <div className="gg-detail-prize">
+              <div className="gg-prize-header">Prize Pool ${detail.prizePool?.toFixed(0)}</div>
+              <div className="gg-prize-grid">
+                <div className="gg-prize-item">
+                  <div className="gg-prize-place" style={{ color: 'var(--gg-primary)' }}>1st Place</div>
+                  <div className="gg-prize-amount">${split.first.toFixed(0)}</div>
+                </div>
+                <div className="gg-prize-item">
+                  <div className="gg-prize-place" style={{ color: 'var(--gg-text-secondary)' }}>2nd Place</div>
+                  <div className="gg-prize-amount">${split.second.toFixed(0)}</div>
+                </div>
+                <div className="gg-prize-item">
+                  <div className="gg-prize-place" style={{ color: 'var(--gg-text-dim)' }}>3rd Place</div>
+                  <div className="gg-prize-amount">${split.third.toFixed(0)}</div>
+                </div>
+              </div>
             </div>
           ) : null}
+
+          {/* Register Button */}
           {user?.ownedTeam?.game === detail.game ? (
-            <button
-              type="button"
-              onClick={register}
-              style={{
-                marginTop: 12,
-                padding: '10px 16px',
-                borderRadius: 10,
-                border: 'none',
-                background: 'var(--gg-primary)',
-                fontWeight: 700,
-              }}
-            >
-              Register team
+            <button type="button" onClick={register} className="gg-btn-primary">
+              Register Team
             </button>
           ) : (
-            <div style={{ color: '#888', marginTop: 12 }}>Create a matching team (captain) to register.</div>
+            <div className="gg-hint">Create a matching team (captain) to register.</div>
           )}
+
+          {/* Bracket */}
           {bracket ? (
-            <div style={{ marginTop: 16 }}>
-              <div style={{ color: '#fff', fontWeight: 700, marginBottom: 8 }}>Bracket</div>
+            <div style={{ marginTop: 32 }}>
+              <div className="gg-section-title">Tournament Bracket</div>
               <BracketView bracketData={bracket} highlightTeamId={user?.teamId} />
             </div>
           ) : null}
