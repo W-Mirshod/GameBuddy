@@ -1,11 +1,10 @@
-import { createQueue } from './queue.js';
 import { prisma } from '../db.js';
 import { refundTournamentEscrows } from '../services/escrow.service.js';
 import { notifyUserById } from '../services/notify.service.js';
 
-export const tournamentRulesQueue = createQueue('tournament_rules');
+const TEN_MIN_MS = 10 * 60 * 1000;
 
-tournamentRulesQueue.process(async () => {
+async function runRulesTick() {
   const now = new Date();
   const windowEnd = new Date(now.getTime() + 2 * 60 * 60 * 1000);
   const tournaments = await prisma.tournament.findMany({
@@ -28,20 +27,16 @@ tournamentRulesQueue.process(async () => {
       );
     }
   }
-});
+}
 
 export async function registerTournamentRulesScheduler() {
-  const existing = await tournamentRulesQueue.getRepeatableJobs();
-  const has = existing.some((j) => j.name === 'rules_tick');
-  if (!has) {
-    await tournamentRulesQueue.add(
-      'rules_tick',
-      {},
-      { repeat: { every: 10 * 60 * 1000 }, jobId: 'rules_tick' },
-    );
-    console.log('[tournamentRules] scheduled rules_tick every 10m');
-  }
-  tournamentRulesQueue.on('error', (e) =>
-    console.log('[tournamentRules] queue error', e?.message || e),
-  );
+  setTimeout(() => {
+    runRulesTick().catch((e) => console.log('[tournamentRules] tick error', e?.message || e));
+  }, 15_000);
+
+  setInterval(() => {
+    runRulesTick().catch((e) => console.log('[tournamentRules] tick error', e?.message || e));
+  }, TEN_MIN_MS);
+
+  console.log('[tournamentRules] scheduler: tick every 10m (first ~15s after startup)');
 }

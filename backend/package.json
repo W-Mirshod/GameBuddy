@@ -17,13 +17,11 @@
     "@google-cloud/vision": "^4.3.3",
     "@prisma/client": "^6.16.2",
     "axios": "^1.12.2",
-    "bull": "^4.16.5",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
-    "ioredis": "^5.7.0",
     "socket.io": "^4.8.1",
     "zod": "^4.1.5"
   },

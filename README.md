@@ -1,6 +1,6 @@
 # GG Arena (V1 Beta)
 
-Monorepo: Telegram Mini App (`frontend/`), referee web panel (`referee-dashboard/`), API (`backend/`), and Telegram bot (`bot/`). Stack: React + Vite, Express + Prisma + PostgreSQL + Redis + Bull + Socket.io.
+Monorepo: Telegram Mini App (`frontend/`), referee web panel (`referee-dashboard/`), API (`backend/`), and Telegram bot (`bot/`). Stack: React + Vite, Express + Prisma + PostgreSQL + in-process job queue + Socket.io (MVP: no Redis).
 
 ## Prerequisites
 
@@ -15,11 +15,11 @@ Monorepo: Telegram Mini App (`frontend/`), referee web panel (`referee-dashboard
 
    `cp .env.example .env`
 
-2. Set at minimum: `BOT_TOKEN`, `JWT_SECRET` (random string), `DATABASE_URL` / `REDIS_URL` matching compose defaults if unchanged.
+2. Set at minimum: `BOT_TOKEN`, `JWT_SECRET` (random string), `DATABASE_URL` matching compose defaults if unchanged.
 
-3. Start databases and API:
+3. Start database and API:
 
-   `docker compose up -d postgres redis`
+   `docker compose up -d postgres`
 
 4. Run migrations (from host, with DB reachable):
 
@@ -38,7 +38,7 @@ Monorepo: Telegram Mini App (`frontend/`), referee web panel (`referee-dashboard
 - API: `http://localhost:3001`
 - Mini App (Vite preview in container): `http://localhost:5173`
 - Referee dashboard: `http://localhost:5174/referee/`
-- Postgres: `localhost:5432`, Redis: `localhost:6379`
+- Postgres: `localhost:5432`
 
 Set `FRONTEND_URL` to your **HTTPS** Mini App URL for production. Register the same domain in BotFather for Web Apps.
 

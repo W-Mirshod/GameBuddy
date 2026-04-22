@@ -16,17 +16,6 @@ services:
       retries: 10
     restart: unless-stopped
 
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "${REDIS_PORT:-6379}:6379"
-    healthcheck:
-      test: ['CMD', 'redis-cli', 'ping']
-      interval: 5s
-      timeout: 3s
-      retries: 10
-    restart: unless-stopped
-
   backend:
     build:
       context: ./backend
@@ -34,7 +23,6 @@ services:
     environment:
       PORT: 3001
       DATABASE_URL: ${DATABASE_URL}
-      REDIS_URL: ${REDIS_URL}
       JWT_SECRET: ${JWT_SECRET}
       BOT_TOKEN: ${BOT_TOKEN}
       ADMIN_TELEGRAM_IDS: ${ADMIN_TELEGRAM_IDS}
@@ -51,8 +39,6 @@ services:
       PAYME_DISPLAY_NAME: ${PAYME_DISPLAY_NAME}
     depends_on:
       postgres:
-        condition: service_healthy
-      redis:
         condition: service_healthy
     ports:
       - "3001:3001"
@@ -101,7 +87,6 @@ services:
     environment:
       BOT_TOKEN: ${BOT_TOKEN}
       DATABASE_URL: ${DATABASE_URL}
-      REDIS_URL: ${REDIS_URL}
       JWT_SECRET: ${JWT_SECRET}
       FRONTEND_URL: ${FRONTEND_URL}
       ADMIN_TELEGRAM_IDS: ${ADMIN_TELEGRAM_IDS}

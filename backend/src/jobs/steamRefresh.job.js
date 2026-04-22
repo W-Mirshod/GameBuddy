@@ -2,7 +2,7 @@ import { createQueue } from './queue.js';
 import { prisma } from '../db.js';
 import { refreshSteamForUser } from '../services/userSteam.service.js';
 
-export const steamRefreshQueue = createQueue('steam_refresh');
+export const steamRefreshQueue = createQueue('steam_refresh', { concurrency: 1 });
 
 steamRefreshQueue.process(async (job) => {
   const { userId } = job.data;
@@ -15,21 +15,6 @@ steamRefreshQueue.process(async (job) => {
     console.log('[steamRefresh] failed', userId, result.error);
   }
 });
-
-export async function registerSteamRefreshScheduler() {
-  const existing = await steamRefreshQueue.getRepeatableJobs();
-  const hasDaily = existing.some((j) => j.name === 'daily_refresh');
-  if (!hasDaily) {
-    await steamRefreshQueue.add(
-      'daily_refresh',
-      {},
-      { repeat: { every: 24 * 60 * 60 * 1000 }, jobId: 'daily_refresh' },
-    );
-    console.log('[steamRefresh] scheduled daily_refresh');
-  }
-
-  steamRefreshQueue.on('error', (e) => console.log('[steamRefresh] queue error', e?.message || e));
-}
 
 export async function enqueueDailyRefresh() {
   const activeSince = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
@@ -44,9 +29,16 @@ export async function enqueueDailyRefresh() {
   }
 }
 
-steamRefreshQueue.on('global:completed', async (jobId) => {
-  if (String(jobId).includes('daily_refresh')) {
-    await enqueueDailyRefresh();
-  }
-});
+const DAY_MS = 24 * 60 * 60 * 1000;
 
+export async function registerSteamRefreshScheduler() {
+  setTimeout(() => {
+    enqueueDailyRefresh().catch((e) => console.log('[steamRefresh] enqueue error', e?.message || e));
+  }, 60_000);
+
+  setInterval(() => {
+    enqueueDailyRefresh().catch((e) => console.log('[steamRefresh] enqueue error', e?.message || e));
+  }, DAY_MS);
+
+  console.log('[steamRefresh] scheduler: refresh every 24h (first run ~1min after startup)');
+}
