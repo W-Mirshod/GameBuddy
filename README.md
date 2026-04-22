@@ -35,7 +35,7 @@ Monorepo: Telegram Mini App (`frontend/`), referee web panel (`referee-dashboard
 
 ## URLs (default compose)
 
-- API: `http://localhost:3001`
+- API: `http://localhost:3101`
 - Mini App (Vite preview in container): `http://localhost:5173`
 - Referee dashboard: `http://localhost:5174/referee/`
 - Postgres: `localhost:5432`
